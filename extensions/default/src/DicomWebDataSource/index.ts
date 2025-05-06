@@ -16,6 +16,7 @@ import { retrieveStudyMetadata, deleteStudyMetadataPromise } from './retrieveStu
 import StaticWadoClient from './utils/StaticWadoClient';
 import getDirectURL from '../utils/getDirectURL';
 import { fixBulkDataURI } from './utils/fixBulkDataURI';
+import { withParams } from '../utils/helper';
 
 const { DicomMetaDictionary, DicomDict } = dcmjs.data;
 
@@ -67,6 +68,7 @@ export type DicomWebConfig = {
   staticWado?: boolean;
   /** User authentication service */
   userAuthenticationService: Record<string, unknown>;
+  datasetId: string;
 };
 
 export type BulkDataURIConfig = {
@@ -97,7 +99,7 @@ export type BulkDataURIConfig = {
  * @param dicomWebConfig - Configuration for the DICOM Web API
  * @returns DICOM Web API object
  */
-function createDicomWebApi(dicomWebConfig: DicomWebConfig, servicesManager) {
+function createDicomWebApi(dicomWebConfigOriginal: DicomWebConfig, servicesManager) {
   const { userAuthenticationService } = servicesManager.services;
   let dicomWebConfigCopy,
     qidoConfig,
@@ -105,7 +107,9 @@ function createDicomWebApi(dicomWebConfig: DicomWebConfig, servicesManager) {
     qidoDicomWebClient,
     wadoDicomWebClient,
     getAuthorizationHeader,
-    generateWadoHeader;
+    generateWadoHeader,
+    dicomWebConfig = withParams(dicomWebConfigOriginal);
+
   // Default to enabling bulk data retrieves, with no other customization as
   // this is part of hte base standard.
   dicomWebConfig.bulkDataURI ||= { enabled: true };
@@ -149,7 +153,10 @@ function createDicomWebApi(dicomWebConfig: DicomWebConfig, servicesManager) {
         url: dicomWebConfig.qidoRoot,
         staticWado: dicomWebConfig.staticWado,
         singlepart: dicomWebConfig.singlepart,
-        headers: userAuthenticationService.getAuthorizationHeader(),
+        headers: {
+          ...userAuthenticationService.getAuthorizationHeader(),
+          'x-dataset-id': dicomWebConfig.datasetId,
+        },
         errorInterceptor: errorHandler.getHTTPErrorHandler(),
         supportsFuzzyMatching: dicomWebConfig.supportsFuzzyMatching,
       };
@@ -158,7 +165,10 @@ function createDicomWebApi(dicomWebConfig: DicomWebConfig, servicesManager) {
         url: dicomWebConfig.wadoRoot,
         staticWado: dicomWebConfig.staticWado,
         singlepart: dicomWebConfig.singlepart,
-        headers: userAuthenticationService.getAuthorizationHeader(),
+        headers: {
+          ...userAuthenticationService.getAuthorizationHeader(),
+          'x-dataset-id': dicomWebConfig.datasetId,
+        },
         errorInterceptor: errorHandler.getHTTPErrorHandler(),
         supportsFuzzyMatching: dicomWebConfig.supportsFuzzyMatching,
       };
@@ -177,7 +187,10 @@ function createDicomWebApi(dicomWebConfig: DicomWebConfig, servicesManager) {
       studies: {
         mapParams: mapParams.bind(),
         search: async function (origParams) {
-          qidoDicomWebClient.headers = getAuthorizationHeader();
+          qidoDicomWebClient.headers = {
+            ...qidoDicomWebClient.headers,
+            ...getAuthorizationHeader(),
+          };
           const { studyInstanceUid, seriesInstanceUid, ...mappedParams } =
             mapParams(origParams, {
               supportsFuzzyMatching: dicomWebConfig.supportsFuzzyMatching,
@@ -193,7 +206,10 @@ function createDicomWebApi(dicomWebConfig: DicomWebConfig, servicesManager) {
       series: {
         // mapParams: mapParams.bind(),
         search: async function (studyInstanceUid) {
-          qidoDicomWebClient.headers = getAuthorizationHeader();
+          qidoDicomWebClient.headers = {
+            ...qidoDicomWebClient.headers,
+            ...getAuthorizationHeader(),
+          };
           const results = await seriesInStudy(qidoDicomWebClient, studyInstanceUid);
 
           return processSeriesResults(results);
@@ -202,7 +218,10 @@ function createDicomWebApi(dicomWebConfig: DicomWebConfig, servicesManager) {
       },
       instances: {
         search: (studyInstanceUid, queryParameters) => {
-          qidoDicomWebClient.headers = getAuthorizationHeader();
+          qidoDicomWebClient.headers = {
+            ...qidoDicomWebClient.headers,
+            ...getAuthorizationHeader(),
+          };
           return qidoSearch.call(
             undefined,
             qidoDicomWebClient,
@@ -244,7 +263,10 @@ function createDicomWebApi(dicomWebConfig: DicomWebConfig, servicesManager) {
       getWadoDicomWebClient: () => wadoDicomWebClient,
 
       bulkDataURI: async ({ StudyInstanceUID, BulkDataURI }) => {
-        qidoDicomWebClient.headers = getAuthorizationHeader();
+        qidoDicomWebClient.headers = {
+          ...qidoDicomWebClient.headers,
+          ...getAuthorizationHeader(),
+        };
         const options = {
           multipart: false,
           BulkDataURI,
@@ -292,7 +314,10 @@ function createDicomWebApi(dicomWebConfig: DicomWebConfig, servicesManager) {
 
     store: {
       dicom: async (dataset, request, dicomDict) => {
-        wadoDicomWebClient.headers = getAuthorizationHeader();
+        wadoDicomWebClient.headers = {
+          ...wadoDicomWebClient.headers,
+          ...getAuthorizationHeader(),
+        };
         if (dataset instanceof ArrayBuffer) {
           const options = {
             datasets: [dataset],
@@ -339,7 +364,10 @@ function createDicomWebApi(dicomWebConfig: DicomWebConfig, servicesManager) {
       madeInClient
     ) => {
       const enableStudyLazyLoad = false;
-      wadoDicomWebClient.headers = generateWadoHeader();
+      wadoDicomWebClient.headers = {
+        ...wadoDicomWebClient.headers,
+        ...generateWadoHeader(),
+      };
       // data is all SOPInstanceUIDs
       const data = await retrieveStudyMetadata(
         wadoDicomWebClient,
@@ -413,7 +441,10 @@ function createDicomWebApi(dicomWebConfig: DicomWebConfig, servicesManager) {
       returnPromises = false
     ) => {
       const enableStudyLazyLoad = true;
-      wadoDicomWebClient.headers = generateWadoHeader();
+      wadoDicomWebClient.headers = {
+        ...wadoDicomWebClient.headers,
+        ...generateWadoHeader(),
+      };
       // Get Series
       const { preLoadData: seriesSummaryMetadata, promises: seriesPromises } =
         await retrieveStudyMetadata(
