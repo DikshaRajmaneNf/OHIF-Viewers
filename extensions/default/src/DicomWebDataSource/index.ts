@@ -28,6 +28,8 @@ const EXPLICIT_VR_LITTLE_ENDIAN = '1.2.840.10008.1.2.1';
 
 const metadataProvider = classes.MetadataProvider;
 
+export type Tdataset = string | null;
+
 export type DicomWebConfig = {
   /** Data source name */
   name: string;
@@ -68,7 +70,7 @@ export type DicomWebConfig = {
   staticWado?: boolean;
   /** User authentication service */
   userAuthenticationService: Record<string, unknown>;
-  datasetId: string;
+  datasetId: Tdataset;
 };
 
 export type BulkDataURIConfig = {
@@ -155,7 +157,7 @@ function createDicomWebApi(dicomWebConfigOriginal: DicomWebConfig, servicesManag
         singlepart: dicomWebConfig.singlepart,
         headers: {
           ...userAuthenticationService.getAuthorizationHeader(),
-          'x-dataset-id': dicomWebConfig.datasetId,
+          ...(dicomWebConfig.datasetId && { 'x-dataset-id': dicomWebConfig.datasetId }),
         },
         errorInterceptor: errorHandler.getHTTPErrorHandler(),
         supportsFuzzyMatching: dicomWebConfig.supportsFuzzyMatching,
@@ -167,7 +169,7 @@ function createDicomWebApi(dicomWebConfigOriginal: DicomWebConfig, servicesManag
         singlepart: dicomWebConfig.singlepart,
         headers: {
           ...userAuthenticationService.getAuthorizationHeader(),
-          'x-dataset-id': dicomWebConfig.datasetId,
+          ...(dicomWebConfig.datasetId && { 'x-dataset-id': dicomWebConfig.datasetId }),
         },
         errorInterceptor: errorHandler.getHTTPErrorHandler(),
         supportsFuzzyMatching: dicomWebConfig.supportsFuzzyMatching,

@@ -1,12 +1,20 @@
 import { utils } from '@ohif/core';
-import { DicomWebConfig } from '../DicomWebDataSource';
+import { DicomWebConfig, Tdataset } from '../DicomWebDataSource';
 
 const { getSplitParam } = utils;
 
-export function getUrlParams() {
+export type Tparams = {
+  datasetId: Tdataset;
+};
+
+export function getUrlParams(): Tparams {
   const params = new URLSearchParams(window.location.search);
 
-  const datasetId = getSplitParam('datasetid', params);
+  const datasetIdParam = getSplitParam('datasetid', params);
+  let datasetId = null;
+  if (datasetIdParam?.length) {
+    datasetId = datasetIdParam[0];
+  }
 
   return {
     datasetId,
@@ -20,6 +28,6 @@ export function withParams(config: DicomWebConfig): DicomWebConfig {
 
   return {
     ...config,
-    datasetId: String(getUrlParams().datasetId),
+    datasetId: getUrlParams().datasetId,
   };
 }
