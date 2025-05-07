@@ -1,0 +1,11 @@
+{
+  "include": [
+    {
+      "dockerfile": "./Dockerfile",
+      "image_name": "test3-cohort-visualizer",
+      "context": ".",
+      "app_name": "test3-cohort-visualizer",
+      "ui_app": "true"
+    }
+  ]
+}

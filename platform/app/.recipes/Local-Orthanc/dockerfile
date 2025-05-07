@@ -7,7 +7,8 @@ WORKDIR /usr/src/app
 
 # Install dependencies
 # apt-get update is combined with apt-get install to avoid using outdated packages
-RUN apt-get update && apt-get install -y build-essential python3
+RUN apt-get update
+RUN apt-get install -y build-essential python3
 
 # Copy package.json and other dependency-related files first
 # Assuming your package.json and yarn.lock or similar are located in the project root
@@ -21,7 +22,7 @@ RUN yarn install
 # Copy the rest of the application code
 
 # set QUICK_BUILD to true to make the build faster for dev
-ENV APP_CONFIG=config/docker-nginx-orthanc.js
+ENV APP_CONFIG=config/local-config.js
 
 # Build the application
 RUN yarn run build
@@ -30,11 +31,13 @@ RUN yarn run build
 FROM nginx:alpine
 
 # # Create directories for logs and html content if they don't already exist
-RUN mkdir -p /var/log/nginx /var/www/html/test3-cohort-visualizer
+RUN mkdir -p /var/log/nginx /var/www/html/ohif-viewer
 
 
 # # Copy build output to serve static files
-COPY --from=builder /usr/src/app/platform/app/dist /var/www/html/test3-cohort-visualizer
+COPY --from=builder /usr/src/app/platform/app/dist /var/www/html/ohif-viewer
+
+COPY platform/app/.recipes/Local-Orthanc/nginx.conf /etc/nginx/
 
 # # Expose HTTP and HTTPS ports
 EXPOSE 80 443
