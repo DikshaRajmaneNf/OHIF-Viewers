@@ -30,11 +30,11 @@ RUN yarn run build
 FROM nginx:alpine
 
 # # Create directories for logs and html content if they don't already exist
-RUN mkdir -p /var/log/nginx /var/www/html/test3-cohort-visualizer
+RUN mkdir -p /var/log/nginx /var/www/html/image-viewer
 
 
 # # Copy build output to serve static files
-COPY --from=builder /usr/src/app/platform/app/dist /var/www/html/test3-cohort-visualizer
+COPY --from=builder /usr/src/app/platform/app/dist /var/www/html/image-viewer
 
 # # Expose HTTP and HTTPS ports
 EXPOSE 80 443

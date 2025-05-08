@@ -2,9 +2,9 @@
   "include": [
     {
       "dockerfile": "./Dockerfile",
-      "image_name": "test3-cohort-visualizer",
+      "image_name": "image-viewer",
       "context": ".",
-      "app_name": "test3-cohort-visualizer",
+      "app_name": "image-viewer",
       "ui_app": "true"
     }
   ]
