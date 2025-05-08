@@ -36,6 +36,7 @@ RUN mkdir -p /var/log/nginx /var/www/html/image-viewer
 # # Copy build output to serve static files
 COPY --from=builder /usr/src/app/platform/app/dist /var/www/html/image-viewer
 
+COPY nginx.conf /etc/nginx/
 # # Expose HTTP and HTTPS ports
 EXPOSE 80 443
 
