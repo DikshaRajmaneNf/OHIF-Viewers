@@ -69,7 +69,10 @@
     "lerna:cache": "./netlify-lerna-cache.sh",
     "lerna:restore": "./netlify-lerna-restore.sh",
     "lerna:customVersion": "node version.mjs",
-    "link-list": "npm ls --depth=0 --link=true"
+    "link-list": "npm ls --depth=0 --link=true",
+    "docker-build": "docker build -f ./Dockerfile -t ohif_orthanc .",
+    "docker-build:local": "docker build -f ./platform/app/.recipes/Local-Orthanc/dockerfile -t ohif_orthanc .",
+    "docker-run": "docker rm --force ohif_viewer;docker run --name ohif_viewer -p1026:80 --network ohif_orthanc -d ohif_orthanc"
   },
   "dependencies": {
     "execa": "^8.0.1"
