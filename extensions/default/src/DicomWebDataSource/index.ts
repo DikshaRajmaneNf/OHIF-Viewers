@@ -16,7 +16,7 @@ import { retrieveStudyMetadata, deleteStudyMetadataPromise } from './retrieveStu
 import StaticWadoClient from './utils/StaticWadoClient';
 import getDirectURL from '../utils/getDirectURL';
 import { fixBulkDataURI } from './utils/fixBulkDataURI';
-import { withParams } from '../utils/helper';
+import { TCustomHeaders, withParams } from '../utils/addCustomHeaders';
 
 const { DicomMetaDictionary, DicomDict } = dcmjs.data;
 
@@ -27,8 +27,6 @@ const ImplementationVersionName = 'OHIF-VIEWER-2.0.0';
 const EXPLICIT_VR_LITTLE_ENDIAN = '1.2.840.10008.1.2.1';
 
 const metadataProvider = classes.MetadataProvider;
-
-export type Tdataset = string | null;
 
 export type DicomWebConfig = {
   /** Data source name */
@@ -70,7 +68,7 @@ export type DicomWebConfig = {
   staticWado?: boolean;
   /** User authentication service */
   userAuthenticationService: Record<string, unknown>;
-  datasetId: Tdataset;
+  customHeaders: TCustomHeaders;
 };
 
 export type BulkDataURIConfig = {
@@ -157,7 +155,7 @@ function createDicomWebApi(dicomWebConfigOriginal: DicomWebConfig, servicesManag
         singlepart: dicomWebConfig.singlepart,
         headers: {
           ...userAuthenticationService.getAuthorizationHeader(),
-          ...(dicomWebConfig.datasetId && { 'x-dataset-id': dicomWebConfig.datasetId }),
+          ...(dicomWebConfig.customHeaders && { ...dicomWebConfig.customHeaders }),
         },
         errorInterceptor: errorHandler.getHTTPErrorHandler(),
         supportsFuzzyMatching: dicomWebConfig.supportsFuzzyMatching,
@@ -169,7 +167,7 @@ function createDicomWebApi(dicomWebConfigOriginal: DicomWebConfig, servicesManag
         singlepart: dicomWebConfig.singlepart,
         headers: {
           ...userAuthenticationService.getAuthorizationHeader(),
-          ...(dicomWebConfig.datasetId && { 'x-dataset-id': dicomWebConfig.datasetId }),
+          ...(dicomWebConfig.customHeaders && { ...dicomWebConfig.customHeaders }),
         },
         errorInterceptor: errorHandler.getHTTPErrorHandler(),
         supportsFuzzyMatching: dicomWebConfig.supportsFuzzyMatching,
