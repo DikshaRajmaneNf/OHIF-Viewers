@@ -3,6 +3,7 @@ import i18n from 'i18next';
 
 import { id } from './id';
 import toolbarButtons from './toolbarButtons';
+import { TUrlParams, TCustomModeConfig } from '../../../platform/app/src/types';
 
 const ohif = {
   layout: '@ohif/extension-default.layoutTemplateModule.viewerLayout',
@@ -47,11 +48,29 @@ function modeFactory({ modeConfiguration }) {
     /**
      * Lifecycle hooks
      */
-    onModeEnter: ({ servicesManager, extensionManager, commandsManager }: withAppTypes) => {
-      const { toolbarService } = servicesManager.services;
+    onModeEnter: ({ servicesManager }: withAppTypes) => {
+      const { toolbarService, customizationService } = servicesManager.services;
 
       toolbarService.addButtons(toolbarButtons);
       toolbarService.createButtonSection('primary', ['MeasurementTools', 'dragPan', 'TagBrowser']);
+
+      toolbarService.createButtonSection('measurementSection', [
+        'line',
+        'point',
+        'polygon',
+        'circle',
+        'box',
+        'freehandpolygon',
+        'freehandline',
+      ]);
+
+      customizationService.setCustomizations({
+        'panelSegmentation.disableEditing': { $set: modeConfiguration?.viewMode || false },
+        'panelSegmentation.showAddSegment': {
+          $set: !modeConfiguration?.viewMode || true,
+        },
+        'panelMeasurement.disableEditing': { $set: modeConfiguration?.viewMode || false },
+      });
     },
 
     onModeExit: ({ servicesManager }: withAppTypes) => {
@@ -128,10 +147,17 @@ function modeFactory({ modeConfiguration }) {
   };
 }
 
+function getCustomModeConfig(params: TUrlParams): TCustomModeConfig {
+  return {
+    viewMode: String(params.viewMode).toLowerCase() === 'true',
+  };
+}
+
 const mode = {
   id,
   modeFactory,
   extensionDependencies,
+  getCustomModeConfig,
 };
 
 export default mode;

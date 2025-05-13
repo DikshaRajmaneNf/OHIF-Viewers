@@ -4,6 +4,7 @@ import initWorkflowSteps from './initWorkflowSteps';
 import initToolGroups from './initToolGroups';
 import toolbarButtons from './toolbarButtons';
 import segmentationButtons from './segmentationButtons';
+import { TUrlParams, TCustomModeConfig } from '../../../platform/app/src/types';
 
 const extensionDependencies = {
   '@ohif/extension-default': '3.7.0-beta.76',
@@ -71,8 +72,10 @@ function modeFactory({ modeConfiguration }) {
           },
         },
         'panelSegmentation.showAddSegment': {
-          $set: false,
+          $set: !modeConfiguration?.viewMode || true,
         },
+        'panelSegmentation.disableEditing': { $set: modeConfiguration?.viewMode || false },
+        'panelMeasurement.disableEditing': { $set: modeConfiguration?.viewMode || false },
       });
 
       // Auto play the clip initially when the volumes are loaded
@@ -171,10 +174,17 @@ function modeFactory({ modeConfiguration }) {
   };
 }
 
+function getCustomModeConfig(params: TUrlParams): TCustomModeConfig {
+  return {
+    viewMode: String(params.viewMode).toLowerCase() === 'true',
+  };
+}
+
 const mode = {
   id,
   modeFactory,
   extensionDependencies,
+  getCustomModeConfig,
 };
 
 export default mode;

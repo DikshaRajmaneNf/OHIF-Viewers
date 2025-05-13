@@ -13,7 +13,7 @@ function getUrlParams(): TCustomHeaders {
 
   const datasetId = getSplitParam('datasetid', params)?.[0];
   const forUser = getSplitParam('foruser', params)?.[0];
-  console.log({ datasetId, forUser });
+
   const urlParams = {
     ...(datasetId && { 'x-dataset-id': datasetId }),
     ...(forUser && { 'for-user': forUser }),

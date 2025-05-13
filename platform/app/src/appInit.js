@@ -25,6 +25,7 @@ import {
 } from '@ohif/core';
 
 import loadModules, { loadModule as peerImport } from './pluginImports';
+import { getAllUrlParams } from './utils/helper';
 
 /**
  * @param {object|func} appConfigOrFunc - application configuration, or a function that returns application configuration
@@ -104,18 +105,25 @@ async function appInit(appConfigOrFunc, defaultExtensions, defaultModes) {
   appConfig.loadedModes = [];
   const modesById = new Set();
   for (let i = 0; i < loadedModes.length; i++) {
-    let mode = loadedModes[i];
+    let mode = loadedModes[i],
+      customModeConfig = {};
+
     if (!mode) {
       continue;
     }
     const { id } = mode;
+    if (mode.getCustomModeConfig) {
+      customModeConfig = mode.getCustomModeConfig(getAllUrlParams());
+    }
 
     if (mode.modeFactory) {
       // If the appConfig contains configuration for this mode, use it.
-      const modeConfiguration =
+      let modeConfiguration =
         appConfig.modesConfiguration && appConfig.modesConfiguration[id]
           ? appConfig.modesConfiguration[id]
           : {};
+
+      modeConfiguration = { ...modeConfiguration, ...customModeConfig };
 
       mode = await mode.modeFactory({ modeConfiguration, loadModules });
     }

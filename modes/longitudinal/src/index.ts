@@ -4,6 +4,7 @@ import { id } from './id';
 import initToolGroups from './initToolGroups';
 import toolbarButtons from './toolbarButtons';
 import moreTools from './moreTools';
+import { TUrlParams, TCustomModeConfig } from '../../../platform/app/src/types';
 
 // Allow this mode by excluding non-imaging modalities such as SR, SEG
 // Also, SM is not a simple imaging modalities, so exclude it.
@@ -84,7 +85,8 @@ function modeFactory({ modeConfiguration }) {
      * Lifecycle hooks
      */
     onModeEnter: function ({ servicesManager, extensionManager, commandsManager }: withAppTypes) {
-      const { measurementService, toolbarService, toolGroupService } = servicesManager.services;
+      const { measurementService, toolbarService, toolGroupService, customizationService } =
+        servicesManager.services;
 
       measurementService.clearMeasurements();
 
@@ -103,6 +105,47 @@ function modeFactory({ modeConfiguration }) {
         'Crosshairs',
         'MoreTools',
       ]);
+
+      toolbarService.createButtonSection('measurementSection', [
+        'Length',
+        'Bidirectional',
+        'ArrowAnnotate',
+        'EllipticalROI',
+        'RectangleROI',
+        'CircleROI',
+        'PlanarFreehandROI',
+        'SplineROI',
+        'LivewireContour',
+      ]);
+
+      toolbarService.createButtonSection('moreToolsSection', [
+        'Reset',
+        'rotate-right',
+        'flipHorizontal',
+        'ImageSliceSync',
+        'ReferenceLines',
+        'ImageOverlayViewer',
+        'StackScroll',
+        'invert',
+        'Probe',
+        'Cine',
+        'Angle',
+        'CobbAngle',
+        'Magnify',
+        'CalibrationLine',
+        'TagBrowser',
+        'AdvancedMagnify',
+        'UltrasoundDirectionalTool',
+        'WindowLevelRegion',
+      ]);
+
+      customizationService.setCustomizations({
+        'panelSegmentation.disableEditing': { $set: modeConfiguration?.viewMode || false },
+        'panelSegmentation.showAddSegment': {
+          $set: !modeConfiguration?.viewMode || true,
+        },
+        'panelMeasurement.disableEditing': { $set: modeConfiguration?.viewMode || false },
+      });
 
       // // ActivatePanel event trigger for when a segmentation or measurement is added.
       // // Do not force activation so as to respect the state the user may have left the UI in.
@@ -243,10 +286,17 @@ function modeFactory({ modeConfiguration }) {
   };
 }
 
+function getCustomModeConfig(params: TUrlParams): TCustomModeConfig {
+  return {
+    viewMode: String(params.viewMode).toLowerCase() === 'true',
+  };
+}
+
 const mode = {
   id,
   modeFactory,
   extensionDependencies,
+  getCustomModeConfig,
 };
 
 export default mode;

@@ -5,6 +5,7 @@ import initToolGroups from './initToolGroups.js';
 import setCrosshairsConfiguration from './utils/setCrosshairsConfiguration.js';
 import setFusionActiveVolume from './utils/setFusionActiveVolume.js';
 import i18n from 'i18next';
+import { TUrlParams, TCustomModeConfig } from '../../../platform/app/src/types';
 
 const { MetadataProvider } = classes;
 
@@ -110,6 +111,9 @@ function modeFactory({ modeConfiguration }) {
             commandsManager.run('createNewLabelmapFromPT');
           },
         },
+        'panelSegmentation.disableEditing': { $set: modeConfiguration?.viewMode || false },
+        'panelSegmentation.showAddSegment': { $set: !modeConfiguration?.viewMode || true },
+        'panelMeasurement.disableEditing': { $set: modeConfiguration?.viewMode || false },
       });
 
       // For the hanging protocol we need to decide on the window level
@@ -221,10 +225,17 @@ function modeFactory({ modeConfiguration }) {
   };
 }
 
+function getCustomModeConfig(params: TUrlParams): TCustomModeConfig {
+  return {
+    viewMode: String(params.viewMode).toLowerCase() === 'true',
+  };
+}
+
 const mode = {
   id,
   modeFactory,
   extensionDependencies,
+  getCustomModeConfig,
 };
 
 export default mode;
