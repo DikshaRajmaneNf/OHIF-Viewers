@@ -14,7 +14,7 @@ function getUrlParams(): TCustomHeaders {
 
   const datasetId = getSplitParam('datasetid', params)?.[0];
   const forUser = getSplitParam('foruser', params)?.[0];
-  const seriesId = getSplitParam('seriesId', params)?.[0];
+  const seriesId = getSplitParam('seriesid', params)?.[0];
 
   const urlParams = {
     ...(datasetId && { 'x-dataset-id': datasetId }),
