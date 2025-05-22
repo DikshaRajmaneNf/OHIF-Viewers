@@ -4,9 +4,11 @@ import { DicomWebConfig } from '../DicomWebDataSource';
 const { getSplitParam } = utils;
 
 export type TCustomHeaders = {
-  'x-dataset-id'?: string;
-  'for-user'?: string;
-  'series-filter'?: string;
+  'dav-dataset-id'?: string;
+  'dav-for-user'?: string;
+  'dav-series-filter'?: string;
+  'dav-patient-id'?: string;
+  'dav-modality'?: string;
 };
 
 function getUrlParams(): TCustomHeaders {
@@ -15,11 +17,15 @@ function getUrlParams(): TCustomHeaders {
   const datasetId = getSplitParam('datasetid', params)?.[0];
   const forUser = getSplitParam('foruser', params)?.[0];
   const seriesId = getSplitParam('seriesid', params)?.[0];
+  const patientId = getSplitParam('patientid', params)?.[0];
+  const modality = getSplitParam('modality', params)?.[0];
 
   const urlParams = {
-    ...(datasetId && { 'x-dataset-id': datasetId }),
-    ...(forUser && { 'for-user': forUser }),
-    ...(seriesId && { 'series-filter': seriesId }),
+    ...(datasetId && { 'dav-dataset-id': datasetId }),
+    ...(forUser && { 'dav-for-user': forUser }),
+    ...(seriesId && { 'dav-series-filter': seriesId }),
+    ...(patientId && { 'dav-patient-id': patientId }),
+    ...(modality && { 'dav-modality': modality }),
   };
 
   return urlParams;
