@@ -44,7 +44,6 @@ export function withParams(config: DicomWebConfig): DicomWebConfig {
 
   return {
     ...config,
-    enableStudyLazyLoad: false,
     customHeaders: getUrlParams(),
   };
 }
