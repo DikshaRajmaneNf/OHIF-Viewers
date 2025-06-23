@@ -6,6 +6,7 @@ const { getSplitParam } = utils;
 export type TCustomHeaders = {
   'dav-dataset-id'?: string;
   'dav-for-user'?: string;
+  'dav-study-id'?: string;
   'dav-series-filter'?: string;
   'dav-instance-id'?: string;
   'dav-patient-id'?: string;
@@ -17,6 +18,7 @@ function getUrlParams(): TCustomHeaders {
 
   const datasetId = getSplitParam('datasetid', params)?.[0];
   const forUser = getSplitParam('foruser', params)?.[0];
+  const studyId = getSplitParam('studyinstanceuids', params)?.[0];
   const seriesId = getSplitParam('seriesid', params)?.[0];
   const instanceId = getSplitParam('instanceid', params)?.[0];
   const patientId = getSplitParam('patientid', params)?.[0];
@@ -25,6 +27,7 @@ function getUrlParams(): TCustomHeaders {
   const urlParams = {
     ...(datasetId && { 'dav-dataset-id': datasetId }),
     ...(forUser && { 'dav-for-user': forUser }),
+    ...(studyId && { 'dav-study-id': studyId }),
     ...(seriesId && { 'dav-series-filter': seriesId }),
     ...(instanceId && { 'dav-instance-id': instanceId }),
     ...(patientId && { 'dav-patient-id': patientId }),
