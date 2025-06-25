@@ -10,7 +10,7 @@ export type TCustomHeaders = {
   'dav-series-filter'?: string;
   'dav-instance-id'?: string;
   'dav-patient-id'?: string;
-  'dav-modalities'?: string;
+  'dav-modality'?: string;
 };
 
 function getUrlParams(): TCustomHeaders {
@@ -22,7 +22,7 @@ function getUrlParams(): TCustomHeaders {
   const seriesId = getSplitParam('seriesid', params)?.[0];
   const instanceId = getSplitParam('instanceid', params)?.[0];
   const patientId = getSplitParam('patientid', params)?.[0];
-  const modalities = getSplitParam('modalities', params)?.[0];
+  const modality = getSplitParam('modality', params)?.join(',');
 
   const urlParams = {
     ...(datasetId && { 'dav-dataset-id': datasetId }),
@@ -31,7 +31,7 @@ function getUrlParams(): TCustomHeaders {
     ...(seriesId && { 'dav-series-filter': seriesId }),
     ...(instanceId && { 'dav-instance-id': instanceId }),
     ...(patientId && { 'dav-patient-id': patientId }),
-    ...(modalities && { 'dav-modalities': modalities }),
+    ...(modality && { 'dav-modality': modality }),
   };
 
   return urlParams;
