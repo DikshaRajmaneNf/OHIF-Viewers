@@ -203,9 +203,10 @@ function modeFactory({ modeConfiguration }) {
             props: {
               leftPanels: [ohif.thumbnailList],
               leftPanelResizable: true,
-              leftPanelClosed: true,
+              leftPanelClosed: modeConfiguration.leftPanelClosed ?? true,
               rightPanels: [tmtv.tmtv, tmtv.petSUV],
               rightPanelResizable: true,
+              rightPanelClosed: modeConfiguration.rightPanelClosed ?? true,
               viewports: [
                 {
                   namespace: cs3d.viewport,
@@ -228,6 +229,12 @@ function modeFactory({ modeConfiguration }) {
 function getCustomModeConfig(params: TUrlParams): TCustomModeConfig {
   return {
     viewMode: String(params.viewMode).toLowerCase() === 'true',
+    ...(params.rightPanelClosed && {
+      rightPanelClosed: String(params.rightPanelClosed).toLowerCase() === 'true',
+    }),
+    ...(params.leftPanelClosed && {
+      leftPanelClosed: String(params.leftPanelClosed).toLowerCase() === 'true',
+    }),
   };
 }
 

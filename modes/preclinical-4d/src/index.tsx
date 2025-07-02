@@ -144,9 +144,10 @@ function modeFactory({ modeConfiguration }) {
             props: {
               leftPanels: [[dynamicVolume.leftPanel, cornerstone.activeViewportWindowLevel]],
               leftPanelResizable: true,
+              leftPanelClosed: modeConfiguration.leftPanelClosed ?? false,
               rightPanels: [],
               rightPanelResizable: true,
-              rightPanelClosed: true,
+              rightPanelClosed: modeConfiguration.rightPanelClosed ?? true,
               viewports: [
                 {
                   namespace: cornerstone.viewport,
@@ -177,6 +178,12 @@ function modeFactory({ modeConfiguration }) {
 function getCustomModeConfig(params: TUrlParams): TCustomModeConfig {
   return {
     viewMode: String(params.viewMode).toLowerCase() === 'true',
+    ...(params.rightPanelClosed && {
+      rightPanelClosed: String(params.rightPanelClosed).toLowerCase() === 'true',
+    }),
+    ...(params.leftPanelClosed && {
+      leftPanelClosed: String(params.leftPanelClosed).toLowerCase() === 'true',
+    }),
   };
 }
 

@@ -224,8 +224,9 @@ function modeFactory({ modeConfiguration }) {
             props: {
               leftPanels: [tracked.thumbnailList],
               leftPanelResizable: true,
+              leftPanelClosed: modeConfiguration.leftPanelClosed ?? false,
               rightPanels: [cornerstone.segmentation, tracked.measurements],
-              rightPanelClosed: true,
+              rightPanelClosed: modeConfiguration.rightPanelClosed ?? true,
               rightPanelResizable: true,
               viewports: [
                 {
@@ -289,6 +290,12 @@ function modeFactory({ modeConfiguration }) {
 function getCustomModeConfig(params: TUrlParams): TCustomModeConfig {
   return {
     viewMode: String(params.viewMode).toLowerCase() === 'true',
+    ...(params.rightPanelClosed && {
+      rightPanelClosed: String(params.rightPanelClosed).toLowerCase() === 'true',
+    }),
+    ...(params.leftPanelClosed && {
+      leftPanelClosed: String(params.leftPanelClosed).toLowerCase() === 'true',
+    }),
   };
 }
 

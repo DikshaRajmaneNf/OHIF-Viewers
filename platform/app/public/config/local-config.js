@@ -17,6 +17,9 @@ window.config = {
     order: 'closest',
   },
   defaultDataSourceName: 'dicomweb',
+  investigationalUseDialog: {
+    option: 'never',
+  },
   dataSources: [
     {
       namespace: '@ohif/extension-default.dataSourcesModule.dicomweb',

@@ -16,6 +16,9 @@ window.config = {
     maxNumPrefetchRequests: 10,
     order: 'closest',
   },
+  investigationalUseDialog: {
+    option: 'never',
+  },
   defaultDataSourceName: 'dicomweb',
   dataSources: [
     {

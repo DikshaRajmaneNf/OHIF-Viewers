@@ -107,10 +107,11 @@ function modeFactory({ modeConfiguration }) {
             props: {
               leftPanels: [ohif.leftPanel],
               leftPanelResizable: true,
-              leftPanelClosed: true, // we have problem with rendering thumbnails for microscopy images
-              rightPanelClosed: true, // we do not have the save microscopy measurements yet
+              leftPanelClosed: modeConfiguration.leftPanelClosed ?? true, // we have problem with rendering thumbnails for microscopy images
+              // rightPanelClosed: true, // we do not have the save microscopy measurements yet
               rightPanels: [ohif.rightPanel],
               rightPanelResizable: true,
+              rightPanelClosed: modeConfiguration.rightPanelClosed ?? true,
               viewports: [
                 {
                   namespace: '@ohif/extension-dicom-microscopy.viewportModule.microscopy-dicom',
@@ -150,6 +151,12 @@ function modeFactory({ modeConfiguration }) {
 function getCustomModeConfig(params: TUrlParams): TCustomModeConfig {
   return {
     viewMode: String(params.viewMode).toLowerCase() === 'true',
+    ...(params.rightPanelClosed && {
+      rightPanelClosed: String(params.rightPanelClosed).toLowerCase() === 'true',
+    }),
+    ...(params.leftPanelClosed && {
+      leftPanelClosed: String(params.leftPanelClosed).toLowerCase() === 'true',
+    }),
   };
 }
 

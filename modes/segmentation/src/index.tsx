@@ -143,7 +143,8 @@ function modeFactory({ modeConfiguration }) {
               leftPanelResizable: true,
               rightPanels: [cornerstone.panelTool],
               rightPanelResizable: true,
-              // leftPanelClosed: true,
+              rightPanelClosed: modeConfiguration.rightPanelClosed ?? true,
+              leftPanelClosed: modeConfiguration.leftPanelClosed ?? false,
               viewports: [
                 {
                   namespace: cornerstone.viewport,
@@ -175,6 +176,12 @@ function modeFactory({ modeConfiguration }) {
 function getCustomModeConfig(params: TUrlParams): TCustomModeConfig {
   return {
     viewMode: String(params.viewMode).toLowerCase() === 'true',
+    ...(params.rightPanelClosed && {
+      rightPanelClosed: String(params.rightPanelClosed).toLowerCase() === 'true',
+    }),
+    ...(params.leftPanelClosed && {
+      leftPanelClosed: String(params.leftPanelClosed).toLowerCase() === 'true',
+    }),
   };
 }
 

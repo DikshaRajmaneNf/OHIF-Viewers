@@ -1,7 +1,5 @@
-import { utils } from '@ohif/core';
 import { DicomWebConfig } from '../DicomWebDataSource';
-
-const { getSplitParam } = utils;
+import { extractUrlParams } from './extractUrlParams';
 
 export type TCustomHeaders = {
   'dav-dataset-id'?: string;
@@ -13,29 +11,15 @@ export type TCustomHeaders = {
   'dav-modality'?: string;
 };
 
-function getUrlParams(): TCustomHeaders {
-  const params = new URLSearchParams(window.location.search);
-
-  const datasetId = getSplitParam('datasetid', params)?.[0];
-  const forUser = getSplitParam('foruser', params)?.[0];
-  const studyId = getSplitParam('studyinstanceuids', params)?.[0];
-  const seriesId = getSplitParam('seriesid', params)?.[0];
-  const instanceId = getSplitParam('instanceid', params)?.[0];
-  const patientId = getSplitParam('patientid', params)?.[0];
-  const modality = getSplitParam('modality', params)?.join(',');
-
-  const urlParams = {
-    ...(datasetId && { 'dav-dataset-id': datasetId }),
-    ...(forUser && { 'dav-for-user': forUser }),
-    ...(studyId && { 'dav-study-id': studyId }),
-    ...(seriesId && { 'dav-series-filter': seriesId }),
-    ...(instanceId && { 'dav-instance-id': instanceId }),
-    ...(patientId && { 'dav-patient-id': patientId }),
-    ...(modality && { 'dav-modality': modality }),
-  };
-
-  return urlParams;
-}
+const HEADER_KEYS = {
+  datasetid: 'dav-dataset-id',
+  foruser: 'dav-for-user',
+  studyinstanceuids: 'dav-study-id',
+  seriesid: 'dav-series-filter',
+  instanceid: 'dav-instance-id',
+  patientid: 'dav-patient-id',
+  modality: 'dav-modality',
+};
 
 export function withParams(config: DicomWebConfig): DicomWebConfig {
   if (!config) {
@@ -44,6 +28,6 @@ export function withParams(config: DicomWebConfig): DicomWebConfig {
 
   return {
     ...config,
-    customHeaders: getUrlParams(),
+    customHeaders: extractUrlParams(Object.keys(HEADER_KEYS), HEADER_KEYS),
   };
 }

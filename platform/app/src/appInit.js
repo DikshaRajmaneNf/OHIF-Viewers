@@ -25,7 +25,7 @@ import {
 } from '@ohif/core';
 
 import loadModules, { loadModule as peerImport } from './pluginImports';
-import { getAllUrlParams } from './utils/helper';
+import { getRequiredUrlParams } from './utils/getRequiredUrlParams';
 
 /**
  * @param {object|func} appConfigOrFunc - application configuration, or a function that returns application configuration
@@ -113,7 +113,7 @@ async function appInit(appConfigOrFunc, defaultExtensions, defaultModes) {
     }
     const { id } = mode;
     if (mode.getCustomModeConfig) {
-      customModeConfig = mode.getCustomModeConfig(getAllUrlParams());
+      customModeConfig = mode.getCustomModeConfig(getRequiredUrlParams());
     }
 
     if (mode.modeFactory) {
