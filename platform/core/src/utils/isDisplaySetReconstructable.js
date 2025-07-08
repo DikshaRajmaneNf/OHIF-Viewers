@@ -26,7 +26,7 @@ export default function isDisplaySetReconstructable(instances, appConfig) {
     const columns = toNumber(firstInstance.Columns);
 
     if (rows > appConfig.max3DTextureSize || columns > appConfig.max3DTextureSize) {
-      console.log('not reconstructible: no 3d texture');
+      console.log('not reconstructible: no 3d texture', { rows, columns, appConfig });
       return { value: false };
     }
   }
