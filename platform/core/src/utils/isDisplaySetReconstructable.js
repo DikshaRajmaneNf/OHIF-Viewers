@@ -152,7 +152,15 @@ function processSingleframe(instances) {
       SamplesPerPixel !== firstImageSamplesPerPixel ||
       !_isSameOrientation(imageOrientationPatient, firstImageOrientationPatient)
     ) {
-      console.log('not reconstructible: dimensions or orientation or diff components');
+      console.log('not reconstructible: dimensions or orientation or diff components', {
+        Rows,
+        Columns,
+        SamplesPerPixel,
+        firstImageSamplesPerPixel,
+        ImageOrientationPatient,
+        firstImageOrientationPatient,
+        sameOrient: !_isSameOrientation(imageOrientationPatient, firstImageOrientationPatient),
+      });
       return { value: false };
     }
   }
@@ -168,7 +176,7 @@ function processSingleframe(instances) {
 
     // We can't reconstruct if we are missing ImagePositionPatient values
     if (!firstImagePositionPatient || !lastIpp) {
-      console.log('not reconstructible: no posPatient');
+      console.log('not reconstructible: no posPatient', { firstImagePositionPatient, lastIpp });
       return { value: false };
     }
 
@@ -194,7 +202,7 @@ function processSingleframe(instances) {
         if (issue === reconstructionIssues.MISSING_FRAMES) {
           missingFrames += spacingIssue.missingFrames;
         } else if (issue === reconstructionIssues.IRREGULAR_SPACING) {
-          console.log('not reconstructible: spacing issue');
+          console.log('not reconstructible: irregular spacing issue');
           return { value: false };
         }
       }
