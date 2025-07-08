@@ -11,10 +11,10 @@ const iopTolerance = 0.01;
  * @param {Object[]} instances An array of `OHIFInstanceMetadata` objects.
  */
 export default function isDisplaySetReconstructable(instances, appConfig) {
-  console.log('in display set reconstructible');
+  console.log('1. in display set reconstructible');
 
   if (!instances.length) {
-    console.log('not reconstructible:  no instances');
+    console.log('2. not reconstructible:  no instances');
     return { value: false };
   }
   const firstInstance = instances[0];
@@ -26,7 +26,7 @@ export default function isDisplaySetReconstructable(instances, appConfig) {
     const columns = toNumber(firstInstance.Columns);
 
     if (rows > appConfig.max3DTextureSize || columns > appConfig.max3DTextureSize) {
-      console.log('not reconstructible: no 3d texture', { rows, columns, appConfig });
+      console.log('3. not reconstructible: no 3d texture', { rows, columns, appConfig });
       return { value: false };
     }
   }
@@ -35,19 +35,19 @@ export default function isDisplaySetReconstructable(instances, appConfig) {
 
   // Can't reconstruct if we only have one image.
   if (!isMultiframe && instances.length === 1) {
-    console.log('not reconstructible: one image');
+    console.log('4. not reconstructible: one image');
     return { value: false };
   }
 
   // Can't reconstruct if all instances don't have the ImagePositionPatient.
   if (!isMultiframe && !instances.every(instance => instance.ImagePositionPatient)) {
-    console.log('not reconstructible:  no positionPatient');
+    console.log('5. not reconstructible:  no positionPatient');
     return { value: false };
   }
 
   const sortedInstances = sortInstancesByPosition(instances);
 
-  console.log('reconstructible?? : in display set end:');
+  console.log('6. reconstructible?? : in display set end:');
   return isMultiframe ? processMultiframe(sortedInstances[0]) : processSingleframe(sortedInstances);
 }
 
@@ -98,37 +98,37 @@ function isNMReconstructable(multiFrameInstance) {
 }
 
 function processMultiframe(multiFrameInstance) {
-  console.log('in multiframe reconstructible');
+  console.log('7. in multiframe reconstructible');
   // If we don't have the PixelMeasuresSequence, then the pixel spacing and
   // slice thickness isn't specified or is changing and we can't reconstruct
   // the dataset.
   if (!hasPixelMeasurements(multiFrameInstance)) {
-    console.log('not reconstructible: in no pixel');
+    console.log('8. not reconstructible: in no pixel');
     return { value: false };
   }
 
   if (!hasOrientation(multiFrameInstance)) {
-    console.log('No image orientation information, not reconstructable');
+    console.log('9. No image orientation information, not reconstructable');
     return { value: false };
   }
 
   if (!hasPosition(multiFrameInstance)) {
-    console.log('No image position information, not reconstructable');
+    console.log('10. No image position information, not reconstructable');
     return { value: false };
   }
 
   if (multiFrameInstance.Modality.includes('NM') && !isNMReconstructable(multiFrameInstance)) {
-    console.log('not reconstructible: nm');
+    console.log('11. not reconstructible: nm');
     return { value: false };
   }
 
   // TODO - check spacing consistency
-  console.log('in multiframe end true reconstructible');
+  console.log('12. in multiframe end true reconstructible');
   return { value: true };
 }
 
 function processSingleframe(instances) {
-  console.log('in single frame reconstructible');
+  console.log('13. in single frame reconstructible');
   const firstImage = instances[0];
   const firstImageRows = toNumber(firstImage.Rows);
   const firstImageColumns = toNumber(firstImage.Columns);
@@ -152,7 +152,7 @@ function processSingleframe(instances) {
       SamplesPerPixel !== firstImageSamplesPerPixel ||
       !_isSameOrientation(imageOrientationPatient, firstImageOrientationPatient)
     ) {
-      console.log('not reconstructible: dimensions or orientation or diff components', {
+      console.log('14. not reconstructible: dimensions or orientation or diff components', {
         i,
         Rows,
         firstImageRows,
@@ -179,7 +179,7 @@ function processSingleframe(instances) {
 
     // We can't reconstruct if we are missing ImagePositionPatient values
     if (!firstImagePositionPatient || !lastIpp) {
-      console.log('not reconstructible: no posPatient', { firstImagePositionPatient, lastIpp });
+      console.log('15. not reconstructible: no posPatient', { firstImagePositionPatient, lastIpp });
       return { value: false };
     }
 
@@ -205,7 +205,7 @@ function processSingleframe(instances) {
         if (issue === reconstructionIssues.MISSING_FRAMES) {
           missingFrames += spacingIssue.missingFrames;
         } else if (issue === reconstructionIssues.IRREGULAR_SPACING) {
-          console.log('not reconstructible: irregular spacing issue');
+          console.log('16. not reconstructible: irregular spacing issue');
           return { value: false };
         }
       }
@@ -214,7 +214,7 @@ function processSingleframe(instances) {
     }
   }
 
-  console.log('in single frame end true reconstructible');
+  console.log('17. in single frame end true reconstructible');
   return { value: true, averageSpacingBetweenFrames };
 }
 
