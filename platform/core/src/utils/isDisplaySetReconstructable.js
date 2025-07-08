@@ -153,6 +153,7 @@ function processSingleframe(instances) {
       !_isSameOrientation(imageOrientationPatient, firstImageOrientationPatient)
     ) {
       console.log('not reconstructible: dimensions or orientation or diff components', {
+        i,
         Rows,
         firstImageRows,
         Columns,
