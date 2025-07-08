@@ -11,7 +11,10 @@ const iopTolerance = 0.01;
  * @param {Object[]} instances An array of `OHIFInstanceMetadata` objects.
  */
 export default function isDisplaySetReconstructable(instances, appConfig) {
+  console.log('in display set reconstructible');
+
   if (!instances.length) {
+    console.log('not reconstructible:  no instances');
     return { value: false };
   }
   const firstInstance = instances[0];
@@ -23,6 +26,7 @@ export default function isDisplaySetReconstructable(instances, appConfig) {
     const columns = toNumber(firstInstance.Columns);
 
     if (rows > appConfig.max3DTextureSize || columns > appConfig.max3DTextureSize) {
+      console.log('not reconstructible: no 3d texture');
       return { value: false };
     }
   }
@@ -31,16 +35,19 @@ export default function isDisplaySetReconstructable(instances, appConfig) {
 
   // Can't reconstruct if we only have one image.
   if (!isMultiframe && instances.length === 1) {
+    console.log('not reconstructible: one image');
     return { value: false };
   }
 
   // Can't reconstruct if all instances don't have the ImagePositionPatient.
   if (!isMultiframe && !instances.every(instance => instance.ImagePositionPatient)) {
+    console.log('not reconstructible:  no positionPatient');
     return { value: false };
   }
 
   const sortedInstances = sortInstancesByPosition(instances);
 
+  console.log('reconstructible?? : in display set end:');
   return isMultiframe ? processMultiframe(sortedInstances[0]) : processSingleframe(sortedInstances);
 }
 
@@ -91,10 +98,12 @@ function isNMReconstructable(multiFrameInstance) {
 }
 
 function processMultiframe(multiFrameInstance) {
+  console.log('in multiframe reconstructible');
   // If we don't have the PixelMeasuresSequence, then the pixel spacing and
   // slice thickness isn't specified or is changing and we can't reconstruct
   // the dataset.
   if (!hasPixelMeasurements(multiFrameInstance)) {
+    console.log('not reconstructible: in no pixel');
     return { value: false };
   }
 
@@ -109,14 +118,17 @@ function processMultiframe(multiFrameInstance) {
   }
 
   if (multiFrameInstance.Modality.includes('NM') && !isNMReconstructable(multiFrameInstance)) {
+    console.log('not reconstructible: nm');
     return { value: false };
   }
 
   // TODO - check spacing consistency
+  console.log('in multiframe end true reconstructible');
   return { value: true };
 }
 
 function processSingleframe(instances) {
+  console.log('in single frame reconstructible');
   const firstImage = instances[0];
   const firstImageRows = toNumber(firstImage.Rows);
   const firstImageColumns = toNumber(firstImage.Columns);
@@ -140,6 +152,7 @@ function processSingleframe(instances) {
       SamplesPerPixel !== firstImageSamplesPerPixel ||
       !_isSameOrientation(imageOrientationPatient, firstImageOrientationPatient)
     ) {
+      console.log('not reconstructible: dimensions or orientation or diff components');
       return { value: false };
     }
   }
@@ -155,6 +168,7 @@ function processSingleframe(instances) {
 
     // We can't reconstruct if we are missing ImagePositionPatient values
     if (!firstImagePositionPatient || !lastIpp) {
+      console.log('not reconstructible: no posPatient');
       return { value: false };
     }
 
@@ -180,6 +194,7 @@ function processSingleframe(instances) {
         if (issue === reconstructionIssues.MISSING_FRAMES) {
           missingFrames += spacingIssue.missingFrames;
         } else if (issue === reconstructionIssues.IRREGULAR_SPACING) {
+          console.log('not reconstructible: spacing issue');
           return { value: false };
         }
       }
@@ -188,6 +203,7 @@ function processSingleframe(instances) {
     }
   }
 
+  console.log('in single frame end true reconstructible');
   return { value: true, averageSpacingBetweenFrames };
 }
 
