@@ -154,7 +154,9 @@ function processSingleframe(instances) {
     ) {
       console.log('not reconstructible: dimensions or orientation or diff components', {
         Rows,
+        firstImageRows,
         Columns,
+        firstImageColumns,
         SamplesPerPixel,
         firstImageSamplesPerPixel,
         ImageOrientationPatient,
