@@ -26,6 +26,7 @@ import {
 
 import loadModules, { loadModule as peerImport } from './pluginImports';
 import { getRequiredUrlParams } from './utils/getRequiredUrlParams';
+import { getCustomModeConfig } from './utils/getParamsforModeConfig';
 
 /**
  * @param {object|func} appConfigOrFunc - application configuration, or a function that returns application configuration
@@ -112,9 +113,10 @@ async function appInit(appConfigOrFunc, defaultExtensions, defaultModes) {
       continue;
     }
     const { id } = mode;
-    if (mode.getCustomModeConfig) {
-      customModeConfig = mode.getCustomModeConfig(getRequiredUrlParams());
-    }
+    customModeConfig = getCustomModeConfig(getRequiredUrlParams());
+    // if (mode.getCustomModeConfig) {
+    //   customModeConfig = mode.getCustomModeConfig(getRequiredUrlParams());
+    // }
 
     if (mode.modeFactory) {
       // If the appConfig contains configuration for this mode, use it.

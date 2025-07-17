@@ -206,8 +206,9 @@ function modeFactory({ modeConfiguration }) {
 
       // Exclude non-image modalities
       return {
-        valid: !!modalities_list.filter(modality => NON_IMAGE_MODALITIES.indexOf(modality) === -1)
-          .length,
+        valid:
+          !!modalities_list.filter(modality => NON_IMAGE_MODALITIES.indexOf(modality) === -1)
+            .length && !modeConfiguration.enableThumbnailView,
         description:
           'The mode does not support studies that ONLY include the following modalities: SM, ECG, SEG, RTSTRUCT',
       };
@@ -287,23 +288,23 @@ function modeFactory({ modeConfiguration }) {
   };
 }
 
-function getCustomModeConfig(params: TUrlParams): TCustomModeConfig {
-  return {
-    viewMode: String(params.viewMode).toLowerCase() === 'true',
-    ...(params.rightPanelClosed && {
-      rightPanelClosed: String(params.rightPanelClosed).toLowerCase() === 'true',
-    }),
-    ...(params.leftPanelClosed && {
-      leftPanelClosed: String(params.leftPanelClosed).toLowerCase() === 'true',
-    }),
-  };
-}
+// function getCustomModeConfig(params: TUrlParams): TCustomModeConfig {
+//   return {
+//     viewMode: String(params.viewMode).toLowerCase() === 'true',
+//     ...(params.rightPanelClosed && {
+//       rightPanelClosed: String(params.rightPanelClosed).toLowerCase() === 'true',
+//     }),
+//     ...(params.leftPanelClosed && {
+//       leftPanelClosed: String(params.leftPanelClosed).toLowerCase() === 'true',
+//     }),
+//   };
+// }
 
 const mode = {
   id,
   modeFactory,
   extensionDependencies,
-  getCustomModeConfig,
+  // getCustomModeConfig,
 };
 
 export default mode;

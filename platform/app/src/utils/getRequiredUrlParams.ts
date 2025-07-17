@@ -5,6 +5,7 @@ const REQUIRED_KEYS = {
   viewmode: 'viewMode',
   rightpanelclosed: 'rightPanelClosed',
   leftpanelclosed: 'leftPanelClosed',
+  enablethumbnailview: 'enableThumbnailView',
 };
 
 export function getRequiredUrlParams(): TUrlParams {

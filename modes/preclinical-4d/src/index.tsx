@@ -118,7 +118,7 @@ function modeFactory({ modeConfiguration }) {
     isValidMode: ({ modalities, study }) => {
       // Todo: we need to find a better way to validate the mode
       return {
-        valid: study.mrn === 'M1',
+        valid: study.mrn === 'M1' && !modeConfiguration.enableThumbnailView,
         description: 'This mode is only available for 4D PET/CT studies.',
       };
     },
@@ -175,23 +175,23 @@ function modeFactory({ modeConfiguration }) {
   };
 }
 
-function getCustomModeConfig(params: TUrlParams): TCustomModeConfig {
-  return {
-    viewMode: String(params.viewMode).toLowerCase() === 'true',
-    ...(params.rightPanelClosed && {
-      rightPanelClosed: String(params.rightPanelClosed).toLowerCase() === 'true',
-    }),
-    ...(params.leftPanelClosed && {
-      leftPanelClosed: String(params.leftPanelClosed).toLowerCase() === 'true',
-    }),
-  };
-}
+// function getCustomModeConfig(params: TUrlParams): TCustomModeConfig {
+//   return {
+//     viewMode: String(params.viewMode).toLowerCase() === 'true',
+//     ...(params.rightPanelClosed && {
+//       rightPanelClosed: String(params.rightPanelClosed).toLowerCase() === 'true',
+//     }),
+//     ...(params.leftPanelClosed && {
+//       leftPanelClosed: String(params.leftPanelClosed).toLowerCase() === 'true',
+//     }),
+//   };
+// }
 
 const mode = {
   id,
   modeFactory,
   extensionDependencies,
-  getCustomModeConfig,
+  // getCustomModeConfig,
 };
 
 export default mode;

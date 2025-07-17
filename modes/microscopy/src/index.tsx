@@ -90,7 +90,7 @@ function modeFactory({ modeConfiguration }) {
       const modalities_list = modalities.split('\\');
 
       return {
-        valid: modalities_list.includes('SM'),
+        valid: modalities_list.includes('SM') && !modeConfiguration.enableThumbnailView,
         description: 'Microscopy mode only supports the SM modality',
       };
     },
@@ -148,23 +148,23 @@ function modeFactory({ modeConfiguration }) {
   };
 }
 
-function getCustomModeConfig(params: TUrlParams): TCustomModeConfig {
-  return {
-    viewMode: String(params.viewMode).toLowerCase() === 'true',
-    ...(params.rightPanelClosed && {
-      rightPanelClosed: String(params.rightPanelClosed).toLowerCase() === 'true',
-    }),
-    ...(params.leftPanelClosed && {
-      leftPanelClosed: String(params.leftPanelClosed).toLowerCase() === 'true',
-    }),
-  };
-}
+// function getCustomModeConfig(params: TUrlParams): TCustomModeConfig {
+//   return {
+//     viewMode: String(params.viewMode).toLowerCase() === 'true',
+//     ...(params.rightPanelClosed && {
+//       rightPanelClosed: String(params.rightPanelClosed).toLowerCase() === 'true',
+//     }),
+//     ...(params.leftPanelClosed && {
+//       leftPanelClosed: String(params.leftPanelClosed).toLowerCase() === 'true',
+//     }),
+//   };
+// }
 
 const mode = {
   id,
   modeFactory,
   extensionDependencies,
-  getCustomModeConfig,
+  // getCustomModeConfig,
 };
 
 export default mode;

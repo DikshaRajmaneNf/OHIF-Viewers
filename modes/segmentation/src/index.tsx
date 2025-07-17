@@ -113,9 +113,10 @@ function modeFactory({ modeConfiguration }) {
       const modalitiesArray = modalities.split('\\');
       return {
         valid:
-          modalitiesArray.length === 1
+          !modeConfiguration.enableThumbnailView &&
+          (modalitiesArray.length === 1
             ? !['SM', 'ECG', 'OT', 'DOC'].includes(modalitiesArray[0])
-            : true,
+            : true),
         description:
           'The mode does not support studies that ONLY include the following modalities: SM, OT, DOC',
       };
@@ -173,23 +174,26 @@ function modeFactory({ modeConfiguration }) {
   };
 }
 
-function getCustomModeConfig(params: TUrlParams): TCustomModeConfig {
-  return {
-    viewMode: String(params.viewMode).toLowerCase() === 'true',
-    ...(params.rightPanelClosed && {
-      rightPanelClosed: String(params.rightPanelClosed).toLowerCase() === 'true',
-    }),
-    ...(params.leftPanelClosed && {
-      leftPanelClosed: String(params.leftPanelClosed).toLowerCase() === 'true',
-    }),
-  };
-}
+// function getCustomModeConfig(params: TUrlParams): TCustomModeConfig {
+//   return {
+//     viewMode: String(params.viewMode).toLowerCase() === 'true',
+//     ...(params.rightPanelClosed && {
+//       rightPanelClosed: String(params.rightPanelClosed).toLowerCase() === 'true',
+//     }),
+//     ...(params.leftPanelClosed && {
+//       leftPanelClosed: String(params.leftPanelClosed).toLowerCase() === 'true',
+//     }),
+//     ...(params.enableThumbnailView && {
+//       enableThumbnailView: String(params.enableThumbnailView).toLowerCase() === 'true',
+//     }),
+//   };
+// }
 
 const mode = {
   id,
   modeFactory,
   extensionDependencies,
-  getCustomModeConfig,
+  // getCustomModeConfig,
 };
 
 export default mode;

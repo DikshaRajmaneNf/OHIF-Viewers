@@ -113,6 +113,7 @@ function createDicomWebApi(dicomWebConfigOriginal: DicomWebConfig, servicesManag
   // Default to enabling bulk data retrieves, with no other customization as
   // this is part of hte base standard.
   dicomWebConfig.bulkDataURI ||= { enabled: true };
+  console.log('default web data src');
 
   const implementation = {
     initialize: ({ params, query }) => {
@@ -608,6 +609,7 @@ function createDicomWebApi(dicomWebConfigOriginal: DicomWebConfig, servicesManag
         instance,
         frame,
         config: dicomWebConfig,
+        thumbnail: true,
       });
       return imageIds;
     },

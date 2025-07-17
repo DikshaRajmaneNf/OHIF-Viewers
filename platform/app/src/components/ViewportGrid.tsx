@@ -8,7 +8,12 @@ import classNames from 'classnames';
 import { useAppConfig } from '@state';
 
 function ViewerViewportGrid(props: withAppTypes) {
-  const { servicesManager, viewportComponents = [], dataSource } = props;
+  const {
+    servicesManager,
+    viewportComponents = [],
+    dataSource,
+    shouldShowUINotification = true,
+  } = props;
   const [viewportGrid, viewportGridService] = useViewportGrid();
   const [appConfig] = useAppConfig();
 
@@ -263,7 +268,8 @@ function ViewerViewportGrid(props: withAppTypes) {
       const ViewportComponent = _getViewportComponent(
         displaySets,
         viewportComponents,
-        uiNotificationService
+        uiNotificationService,
+        shouldShowUINotification
       );
 
       // look inside displaySets to see if they need reRendering
@@ -358,7 +364,12 @@ function ViewerViewportGrid(props: withAppTypes) {
   );
 }
 
-function _getViewportComponent(displaySets, viewportComponents, uiNotificationService) {
+function _getViewportComponent(
+  displaySets,
+  viewportComponents,
+  uiNotificationService,
+  shouldShowUINotification
+) {
   if (!displaySets || !displaySets.length) {
     return EmptyViewport;
   }
@@ -379,12 +390,12 @@ function _getViewportComponent(displaySets, viewportComponents, uiNotificationSe
     }
   }
 
-  console.log("Can't show displaySet", SOPClassHandlerId, displaySets[0]);
-  uiNotificationService.show({
-    title: 'Viewport Not Supported Yet',
-    message: `Cannot display SOPClassUID of ${displaySets[0].SOPClassUID} yet`,
-    type: 'error',
-  });
+  shouldShowUINotification &&
+    uiNotificationService.show({
+      title: 'Viewport Not Supported Yet',
+      message: `Cannot display SOPClassUID of ${displaySets[0].SOPClassUID} yet`,
+      type: 'error',
+    });
 
   return EmptyViewport;
 }

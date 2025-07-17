@@ -4,6 +4,9 @@
       "packageName": "@ohif/extension-default"
     },
     {
+      "packageName": "@ohif/extension-thumbnail"
+    },
+    {
       "packageName": "@ohif/extension-cornerstone",
       "version": "3.0.0"
     },
@@ -78,6 +81,9 @@
     },
     {
       "packageName": "@ohif/mode-preclinical-4d"
+    },
+    {
+      "packageName": "@ohif/mode-thumbnail"
     },
     {
       "packageName": "@ohif/mode-test",

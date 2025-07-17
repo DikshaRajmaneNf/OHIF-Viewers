@@ -38,7 +38,6 @@ export default function getImageId({ instance, frame, config, thumbnail = false 
   }
 
   const renderingAttr = thumbnail ? 'thumbnailRendering' : 'imageRendering';
-
   if (!config[renderingAttr] || config[renderingAttr] === 'wadouri') {
     const wadouri = buildInstanceWadoUrl(config, instance);
 

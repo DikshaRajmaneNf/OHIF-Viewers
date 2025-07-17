@@ -8,4 +8,5 @@ export type TUrlParams = {
   viewMode?: string;
   rightPanelClosed?: string;
   leftPanelClosed?: string;
+  enableThumbnailView?: string;
 };

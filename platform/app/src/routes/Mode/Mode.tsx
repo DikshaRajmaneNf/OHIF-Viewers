@@ -108,6 +108,7 @@ export default function ModeRoute({
   useEffect(() => {
     // Preventing state update for unmounted component
     isMounted.current = true;
+
     return () => {
       isMounted.current = false;
     };
