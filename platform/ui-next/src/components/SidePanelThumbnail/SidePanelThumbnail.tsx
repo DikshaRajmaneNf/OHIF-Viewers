@@ -145,8 +145,8 @@ const createStyleMap = (
     },
     closed: {
       left: {
-        marginLeft: `-${collapsedHideWidth}px`,
-        marginRight: `${collapsedInsideBorderSize}px`,
+        marginLeft: `0px`,
+        marginRight: `0px`,
         alignItems: `flex-end`,
       },
       right: {
@@ -167,10 +167,11 @@ const getToolTipContent = (label: string, disabled: boolean) => {
   );
 };
 
-const createBaseStyle = (expandedWidth: number) => {
+const createBaseStyle = (expandedWidth: number, isPanelOpen: boolean) => {
+  const widthValue = isPanelOpen ? `${expandedWidth}%` : `50px`;
   return {
     maxWidth: `${expandedWidth}%`,
-    width: `${expandedWidth}%`,
+    width: widthValue,
     // To align the top of the side panel with the top of the viewport grid, use position relative and offset the
     // top by the same top offset as the viewport grid. Also adjust the height so that there is no overflow.
     position: 'relative',
@@ -207,7 +208,7 @@ const SidePanelThumbnail = ({
     )
   );
 
-  const [baseStyle, setBaseStyle] = useState(createBaseStyle(expandedWidth));
+  const [baseStyle, setBaseStyle] = useState(createBaseStyle(expandedWidth, panelOpen));
 
   const [gridAvailableWidth, setGridAvailableWidth] = useState(
     expandedWidth - closeIconWidth - gridHorizontalPadding
@@ -261,7 +262,7 @@ const SidePanelThumbnail = ({
         collapsedOutsideBorderSize
       )
     );
-    setBaseStyle(createBaseStyle(expandedWidth));
+    setBaseStyle(createBaseStyle(expandedWidth, panelOpen));
 
     const gridAvailableWidth = expandedWidth - closeIconWidth - gridHorizontalPadding;
     setGridAvailableWidth(gridAvailableWidth);
@@ -273,6 +274,7 @@ const SidePanelThumbnail = ({
     expandedInsideBorderSize,
     tabs.length,
     collapsedOutsideBorderSize,
+    panelOpen,
   ]);
 
   useEffect(() => {
