@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { SidePanel } from '@ohif/ui-next';
+import { SidePanelThumbnail } from '@ohif/ui-next';
 import { Types } from '@ohif/core';
 
 export type SidePanelWithServicesProps = {
@@ -100,7 +100,7 @@ const SidePanelWithServices = ({
   }, [tabs, sidePanelExpanded, panelService, closedManually]);
 
   return (
-    <SidePanel
+    <SidePanelThumbnail
       {...props}
       side={side}
       tabs={tabs}

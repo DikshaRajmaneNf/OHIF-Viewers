@@ -100,6 +100,7 @@ import {
   ToolButtonListDivider,
   Toolbox,
   Numeric,
+  SidePanelThumbnail,
 } from './components';
 import { DataRow } from './components/DataRow';
 
@@ -225,4 +226,5 @@ export {
   useToolbox,
   utils,
   Numeric,
+  SidePanelThumbnail,
 };

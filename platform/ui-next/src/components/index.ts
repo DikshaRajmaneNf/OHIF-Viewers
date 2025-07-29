@@ -54,7 +54,6 @@ import { DisplaySetMessageListTooltip } from './DisplaySetMessageListTooltip';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from './Tooltip';
 import { ToolboxUI, Toolbox } from './OHIFToolbox';
 import Numeric from './Numeric';
-
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -101,6 +100,7 @@ import {
   ToolButtonListItem,
   ToolButtonListDivider,
 } from './ToolButton';
+import { SidePanelThumbnail } from './SidePanelThumbnail';
 
 export {
   Numeric,
@@ -225,4 +225,5 @@ export {
   ToolButtonListDropDown,
   ToolButtonListItem,
   ToolButtonListDivider,
+  SidePanelThumbnail,
 };
