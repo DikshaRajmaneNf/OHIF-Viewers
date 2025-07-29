@@ -10,6 +10,7 @@ window.config = {
   showLoadingIndicator: true,
   experimentalStudyBrowserSort: false,
   strictZSpacingForVolumeViewport: true,
+  groupEnabledModesFirst: true,
   studyPrefetcher: {
     enabled: true,
     displaySetsCount: 2,
