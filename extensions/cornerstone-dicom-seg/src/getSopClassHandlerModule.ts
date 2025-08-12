@@ -166,8 +166,23 @@ async function _loadSegments({
 
   const { segmentationService, uiNotificationService } = servicesManager.services;
 
+  // Get custom headers from the active data source configuration
+  const activeDataSource = extensionManager.getActiveDataSource()?.[0];
+  const sourceConfig = activeDataSource?.getConfig() ?? {};
+  const customHeaders = sourceConfig.customHeaders || {};
+
+  // Merge authorization headers with custom headers
+  const mergedHeaders = {
+    ...(headers || {}),
+    ...(customHeaders || {}),
+  };
+
   const { dicomLoaderService } = utilityModule.exports;
-  const arrayBuffer = await dicomLoaderService.findDicomDataPromise(segDisplaySet, null, headers);
+  const arrayBuffer = await dicomLoaderService.findDicomDataPromise(
+    segDisplaySet,
+    null,
+    mergedHeaders
+  );
 
   const referencedDisplaySet = servicesManager.services.displaySetService.getDisplaySetByUID(
     segDisplaySet.referencedDisplaySetInstanceUID
