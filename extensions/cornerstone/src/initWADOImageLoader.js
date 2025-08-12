@@ -43,6 +43,11 @@ export default function initWADOImageLoader(
         Object.assign(xhrRequestHeaders, headers);
       }
 
+      // Add custom headers from the data source configuration or .dcm file fetch
+      if (sourceConfig.customHeaders) {
+        Object.assign(xhrRequestHeaders, sourceConfig.customHeaders);
+      }
+
       return xhrRequestHeaders;
     },
     errorInterceptor: error => {
