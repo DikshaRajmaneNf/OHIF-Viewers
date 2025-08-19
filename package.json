@@ -72,7 +72,8 @@
     "link-list": "npm ls --depth=0 --link=true",
     "docker-build": "docker build -f ./Dockerfile -t ohif_orthanc .",
     "docker-build:local": "docker build -f ./platform/app/.recipes/Local-Orthanc/dockerfile -t ohif_orthanc .",
-    "docker-run": "docker rm --force ohif_viewer;docker run --name ohif_viewer -p1026:80 --network ohif_orthanc -d ohif_orthanc"
+    "docker-run": "docker rm --force ohif_viewer;docker run --name ohif_viewer -p1026:80 --network ohif_orthanc -d ohif_orthanc",
+    "docker-build-push": "docker build --platform linux/amd64 -t registry.nferx.com/nsights_front/image-viewer/image-viewer:$npm_config_version . --network=host && docker push registry.nferx.com/nsights_front/image-viewer/image-viewer:$npm_config_version"
   },
   "dependencies": {
     "execa": "^8.0.1"
