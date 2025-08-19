@@ -28,6 +28,7 @@ type SidePanelProps = {
   collapsedInsideBorderSize: number;
   collapsedOutsideBorderSize: number;
   tabs: any;
+  onDoubleClickThumbnail?: (displaySetInstanceUID: string) => void;
 };
 
 type StyleMap = {
@@ -189,6 +190,7 @@ const SidePanelThumbnail = ({
   onOpen,
   onClose,
   onActiveTabIndexChange,
+  onDoubleClickThumbnail,
   expandedWidth = 280,
   collapsedWidth = 25,
   expandedInsideBorderSize = 4,
@@ -467,7 +469,26 @@ const SidePanelThumbnail = ({
           {getOpenStateComponent()}
           {tabs.map((tab, tabIndex) => {
             if (tabIndex === activeTabIndex) {
-              return <tab.content key={tabIndex} />;
+              return (
+                <div
+                  key={tabIndex}
+                  onDoubleClick={event => {
+                    // Check if the double-click target is a thumbnail
+                    const target = event.target as HTMLElement;
+                    const thumbnailElement = target.closest(
+                      '[data-cy="study-browser-thumbnail"], [data-cy="study-browser-thumbnail-no-image"]'
+                    );
+                    if (thumbnailElement && onDoubleClickThumbnail) {
+                      const displaySetInstanceUID = thumbnailElement.id?.replace('thumbnail-', '');
+                      if (displaySetInstanceUID) {
+                        onDoubleClickThumbnail(displaySetInstanceUID);
+                      }
+                    }
+                  }}
+                >
+                  <tab.content />
+                </div>
+              );
             }
             return null;
           })}

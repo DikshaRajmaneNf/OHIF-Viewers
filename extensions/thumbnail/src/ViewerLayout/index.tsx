@@ -8,6 +8,7 @@ import ViewerHeader from './ViewerHeader';
 import SidePanelWithServices from '../Components/SidePanelWithServices';
 import { Onboarding, ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@ohif/ui-next';
 import useResizablePanels from './ResizablePanelsHook';
+import { triggerSeriesThumbnailClick } from '../utils/iframeCommunication';
 
 const resizableHandleClassName = 'mt-[1px] bg-black';
 
@@ -131,6 +132,27 @@ function ViewerLayout({
     };
   }, [panelService, hasPanels]);
 
+  const onDoubleClickThumbnail = (displaySetInstanceUID: string) => {
+    console.log('double click thumbnail MAIN component', displaySetInstanceUID);
+
+    // Get the SeriesInstanceUID from the displaySetInstanceUID
+    let seriesInstanceUID = null;
+    try {
+      const { displaySetService } = servicesManager.services;
+      const displaySet = displaySetService.getDisplaySetByUID(displaySetInstanceUID);
+      console.log('displaySet thumbnail', displaySet);
+
+      if (displaySet) {
+        seriesInstanceUID = displaySet.SeriesInstanceUID;
+        console.log('thumbnail SeriesInstanceUID:', seriesInstanceUID);
+        // Send iframe communication to parent application with both UIDs
+        triggerSeriesThumbnailClick(seriesInstanceUID);
+      }
+    } catch (error) {
+      console.error('Error getting SeriesInstanceUID:', error);
+    }
+  };
+
   const viewportComponents = viewports.map(getViewportComponentData);
 
   return (
@@ -157,6 +179,7 @@ function ViewerLayout({
                     side="left"
                     isExpanded={!leftPanelClosedState}
                     servicesManager={servicesManager}
+                    onDoubleClickThumbnail={onDoubleClickThumbnail}
                     {...leftPanelProps}
                   />
                 </ResizablePanel>

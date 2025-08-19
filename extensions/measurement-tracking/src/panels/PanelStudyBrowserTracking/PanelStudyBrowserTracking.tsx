@@ -34,6 +34,7 @@ export default function PanelStudyBrowserTracking({
   getStudiesForPatientByMRN,
   requestDisplaySetCreationForStudy,
   dataSource,
+  onDoubleClickThumbnail,
 }) {
   const { servicesManager, commandsManager } = useSystem();
   const {
@@ -93,6 +94,12 @@ export default function PanelStudyBrowserTracking({
   };
 
   const onDoubleClickThumbnailHandler = displaySetInstanceUID => {
+    console.log('thumbnail double click handler');
+
+    // Call the custom double-click handler if provided
+    if (onDoubleClickThumbnail) {
+      onDoubleClickThumbnail(displaySetInstanceUID);
+    }
     let updatedViewports = [];
     const viewportId = activeViewportId;
     try {
@@ -216,7 +223,7 @@ export default function PanelStudyBrowserTracking({
         thumbnailSrc = await displaySet.getThumbnailSrc();
       }
       if (!thumbnailSrc) {
-        let thumbnailSrc = await getImageSrc(imageId);
+        const thumbnailSrc = await getImageSrc(imageId);
         displaySet.thumbnailSrc = thumbnailSrc;
       }
       newImageSrcEntry[dSet.displaySetInstanceUID] = thumbnailSrc;
@@ -546,6 +553,7 @@ PanelStudyBrowserTracking.propTypes = {
   getImageSrc: PropTypes.func.isRequired,
   getStudiesForPatientByMRN: PropTypes.func.isRequired,
   requestDisplaySetCreationForStudy: PropTypes.func.isRequired,
+  onDoubleClickThumbnail: PropTypes.func,
 };
 
 function getImageIdForThumbnail(displaySet: any, imageIds: any) {

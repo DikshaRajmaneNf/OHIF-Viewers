@@ -16,6 +16,7 @@ export type SidePanelWithServicesProps = {
   expandedInsideBorderSize?: number;
   collapsedInsideBorderSize?: number;
   collapsedOutsideBorderSize?: number;
+  onDoubleClickThumbnail?: (displaySetInstanceUID: string) => void;
 };
 
 const SidePanelWithServices = ({
@@ -26,6 +27,7 @@ const SidePanelWithServices = ({
   tabs: tabsProp,
   onOpen,
   onClose,
+  onDoubleClickThumbnail,
   ...props
 }: SidePanelWithServicesProps) => {
   const panelService = servicesManager?.services?.panelService;
@@ -35,7 +37,14 @@ const SidePanelWithServices = ({
   const [sidePanelExpanded, setSidePanelExpanded] = useState(isExpanded);
   const [activeTabIndex, setActiveTabIndex] = useState(activeTabIndexProp ?? 0);
   const [closedManually, setClosedManually] = useState(false);
-  const [tabs, setTabs] = useState(tabsProp ?? panelService.getPanels(side));
+  const [tabs, setTabs] = useState(() => {
+    const initialTabs = tabsProp ?? panelService.getPanels(side);
+    // Add double-click handler to each tab's component
+    return initialTabs.map(tab => ({
+      ...tab,
+      component: props => React.createElement(tab.component, { ...props, onDoubleClickThumbnail }),
+    }));
+  });
 
   const handleActiveTabIndexChange = useCallback(({ activeTabIndex }) => {
     setActiveTabIndex(activeTabIndex);
@@ -69,7 +78,14 @@ const SidePanelWithServices = ({
           return;
         }
 
-        setTabs(panelService.getPanels(side));
+        const newTabs = panelService.getPanels(side);
+        // Add double-click handler to each tab's component
+        const updatedTabs = newTabs.map(tab => ({
+          ...tab,
+          component: props =>
+            React.createElement(tab.component, { ...props, onDoubleClickThumbnail }),
+        }));
+        setTabs(updatedTabs);
       }
     );
 
@@ -109,6 +125,7 @@ const SidePanelWithServices = ({
       onOpen={handleOpen}
       onClose={handleClose}
       onActiveTabIndexChange={handleActiveTabIndexChange}
+      onDoubleClickThumbnail={onDoubleClickThumbnail}
     />
   );
 };
