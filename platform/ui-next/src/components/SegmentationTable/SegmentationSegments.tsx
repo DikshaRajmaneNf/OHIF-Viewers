@@ -35,7 +35,7 @@ export const SegmentationSegments: React.FC<{
 
   return (
     <ScrollArea
-      className={`ohif-scrollbar invisible-scrollbar bg-bkg-low space-y-px h-[900px]`}
+      className={`ohif-scrollbar bg-bkg-low h-[900px] space-y-px`}
       showArrows={true}
     >
       {Object.values(representationToUse.segments).map(segment => {

@@ -122,9 +122,7 @@ const StudyBrowser = ({
         </LegacyButtonGroup>
         {experimentalStudyBrowserSort && <StudyBrowserSort servicesManager={servicesManager} />}
       </div>
-      <div className="ohif-scrollbar invisible-scrollbar flex flex-1 flex-col overflow-auto">
-        {getTabContent()}
-      </div>
+      <div className="ohif-scrollbar flex flex-1 flex-col overflow-auto">{getTabContent()}</div>
     </React.Fragment>
   );
 };

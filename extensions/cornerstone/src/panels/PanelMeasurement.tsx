@@ -66,7 +66,7 @@ export default function PanelMeasurement({
   return (
     <>
       <div
-        className="invisible-scrollbar overflow-y-auto overflow-x-hidden"
+        className="overflow-y-auto overflow-x-hidden"
         ref={measurementsPanelRef}
         data-cy={'trackedMeasurements-panel'}
       >
