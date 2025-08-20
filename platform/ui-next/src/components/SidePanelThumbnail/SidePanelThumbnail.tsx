@@ -461,7 +461,7 @@ const SidePanelThumbnail = ({
 
   return (
     <div
-      className={classnames(className, baseClasses, 'h-full')}
+      className={classnames(className, baseClasses)}
       style={style}
     >
       {panelOpen ? (
@@ -472,7 +472,7 @@ const SidePanelThumbnail = ({
               return (
                 <div
                   key={tabIndex}
-                  className="flex-1 overflow-auto pb-4"
+                  className="flex-1 overflow-hidden pb-10"
                   onDoubleClick={event => {
                     // Check if the double-click target is a thumbnail
                     const target = event.target as HTMLElement;
